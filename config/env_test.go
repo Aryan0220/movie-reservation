@@ -1,13 +1,20 @@
-package main
+package config
 
 import (
-	"booking-system/config"
 	"os"
 	"path/filepath"
 	"testing"
 )
 
-func Test_Env(t *testing.T) {
+func TestGetEnv_ReturnsValue(t *testing.T) {
+	t.Setenv("TEST_KEY", "test-value")
+
+	if got := GetEnv("TEST_KEY"); got != "test-value" {
+		t.Fatalf("expected test-value, got %q", got)
+	}
+}
+
+func TestLoadEnv_FindsDotEnv(t *testing.T) {
 	tempDir := t.TempDir()
 	oldDir, err := os.Getwd()
 	if err != nil {
@@ -26,10 +33,7 @@ func Test_Env(t *testing.T) {
 		t.Fatalf("failed to write .env: %v", err)
 	}
 
-	got := config.LoadEnv()
-	want := ".Env File Found"
-	if got != want {
-		t.Errorf("expected %q, got %q", want, got)
+	if got := LoadEnv(); got != ".Env File Found" {
+		t.Fatalf("expected .Env File Found, got %q", got)
 	}
 }
-

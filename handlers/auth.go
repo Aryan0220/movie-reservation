@@ -5,6 +5,7 @@ import (
 	"booking-system/services"
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 func Register(c *fiber.Ctx) error {
@@ -16,6 +17,7 @@ func Register(c *fiber.Ctx) error {
 
 	err := services.CreateUser(user)
 	if err != nil {
+		log.Print("Error creating user: ", err)
 		return c.Status(500).JSON(fiber.Map{"message": "User Creation Failed"})
 	}
 

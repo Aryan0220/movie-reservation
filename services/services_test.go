@@ -1,13 +1,18 @@
 package services
 
 import (
-	"testing"
 	"reflect"
+	"testing"
 )
 
 func Test_Generate_Token(t *testing.T){
-	got1, got2 := GenerateToken(123)
-	if reflect.TypeOf(got1) != reflect.TypeOf("") {
-		t.Errorf("Generate Token for 123, result not string %T and %T", got1, got2)
+	t.Setenv("JWT_SECRET", "test-secret")
+
+	token, err := GenerateToken(123, "admin")
+	if err != nil {
+		t.Fatalf("GenerateToken returned error: %v", err)
+	}
+	if reflect.TypeOf(token) != reflect.TypeOf("") || token == "" {
+		t.Errorf("GenerateToken returned invalid token value: %q", token)
 	}
 }
