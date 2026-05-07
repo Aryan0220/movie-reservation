@@ -69,3 +69,26 @@ func DeleteMovie(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{"message": "Movie Deleted"})
 }
+
+func GetMovieTimings(c *fiber.Ctx) error {
+	var input string
+
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	timings, err := services.GetMovieTimings(input)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get movie timings", "details": err.Error()})
+	}
+
+	return c.Status(200).JSON(timings)
+}
+
+func GetMovies(c *fiber.Ctx) error {
+	movies, err := services.Get_Movies()
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Failed to get movies"})
+	}
+	return c.Status(200).JSON(movies)
+}

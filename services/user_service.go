@@ -27,3 +27,14 @@ func GetUserByEmail(email string) (models.User, error) {
 
 	return user, err
 }
+
+func GetMovieTimings(title string) (models.MovieTimetable, error) {
+	var timings models.MovieTimetable
+
+	err := config.DB.QueryRow(context.Background(),
+		"SELECT id, movie_id, timings, screens, show_date, normal_price, vip_price FROM movie_timetables WHERE movie_id=(SELECT id FROM movies WHERE title=$1)",
+		title,
+	).Scan(&timings.ID, &timings.MovieID, &timings.Timings, &timings.Screens, &timings.ShowDate, &timings.NormalPrice, &timings.VipPrice)
+
+	return timings, err
+}

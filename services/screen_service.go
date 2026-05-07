@@ -5,7 +5,7 @@ import (
 	"booking-system/config"
 	"booking-system/models"
 */
-	"fmt"
+	"fmt" 
 )
 
 func AddScreenToMovie() {
