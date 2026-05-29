@@ -14,3 +14,8 @@ profile.cov
 
 go.work
 go.work.sum
+
+Dockerfile
+docker-compose.yml
+.air.toml
+*.md

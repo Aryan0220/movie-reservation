@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -48,12 +47,7 @@ func Protected(c *fiber.Ctx) error {
 		})
 	}
 
-	role, ok := claims["role"].(string)
-	if !ok || role == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Invalid token claims",
-		})
-	}
+	role, _ := claims["role"].(bool)
 
 	userID, ok := toIntClaim(claims["user_id"])
 	if !ok {

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"time"
-
+	"booking-system/config"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -66,8 +66,9 @@ func ReserveMovie(c *fiber.Ctx) error {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to reserve seat"})
 		}
 	}
-
+	config.PrintLog("Movie Reservation created.", "INFO")
 	return c.JSON(fiber.Map{"message": "Reservation created"})
+	
 }
 
 func CancelReservation(c *fiber.Ctx) error {
@@ -97,7 +98,7 @@ func CancelReservation(c *fiber.Ctx) error {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to cancel reservation"})
 		}
 	}
-
+	config.PrintLog("Movie Reservation canceled.", "INFO")
 	return c.JSON(fiber.Map{"message": "Reservation canceled"})
 }
 
@@ -128,7 +129,7 @@ func GetCapacity(c *fiber.Ctx) error {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to get capacity"})
 		}
 	}
-
+	config.PrintLog("Capacity checked for timetable "+strconv.Itoa(input.TimetableID)+", screen "+strconv.Itoa(input.ScreenID), "INFO")
 	return c.JSON(fiber.Map{"total": total, "available": available})
 }
 
@@ -142,6 +143,7 @@ func GetAllReservations(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to get bookings"})
 	}
 
+	config.PrintLog("All reservations fetched.", "INFO")
 	return c.JSON(bookings)
 }
 
@@ -162,13 +164,13 @@ func GetRevenue(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to get revenue"})
 	}
-
+	config.PrintLog("Revenue calculated for movie id "+strconv.Itoa(input.MovieID), "INFO")
 	return c.JSON(fiber.Map{"movie_id": input.MovieID, "revenue": revenue})
 }
 
 func requireAdmin(c *fiber.Ctx) error {
-	role := c.Locals("Role")
-	if role != "admin" {
+	role := c.Locals("Role").(bool)
+	if !role {
 		return c.Status(403).JSON(fiber.Map{"error": "User not authorized"})
 	}
 	return nil

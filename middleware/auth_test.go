@@ -95,7 +95,7 @@ func TestProtected_InvalidAlg(t *testing.T) {
 func TestProtected_ValidToken(t *testing.T) {
 	t.Setenv("JWT_SECRET", "test-secret")
 
-	token, err := services.GenerateToken(123, "admin")
+	token, err := services.GenerateToken(123, true)
 	if err != nil {
 		t.Fatalf("GenerateToken error: %v", err)
 	}

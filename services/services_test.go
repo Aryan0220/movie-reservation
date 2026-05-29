@@ -8,7 +8,7 @@ import (
 func Test_Generate_Token(t *testing.T){
 	t.Setenv("JWT_SECRET", "test-secret")
 
-	token, err := GenerateToken(123, "admin")
+	token, err := GenerateToken(123, true)
 	if err != nil {
 		t.Fatalf("GenerateToken returned error: %v", err)
 	}

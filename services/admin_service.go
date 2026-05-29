@@ -7,33 +7,16 @@ import (
 )
 
 func PromoteToAdmin(user models.User) error {
-	if user.Role == "admin" {
+	if user.Role == true{
 		return nil
 	}
 	
 	_, err := config.DB.Exec(context.Background(),
-		"UPDATE users SET role='admin' WHERE email=$1",
+		"UPDATE users SET admin=true WHERE email=$1",
 		(user.Email),
 	)
 
 	return err
 }
 
-/*
-func MovieRevenue(movie models.Movie) error {
-
-}
-
-func AllReservation() error {
-
-}
-
-func TotalRevenue() error {
-
-}
-
-func Capacity() error {
-
-}
-*/
  

@@ -7,6 +7,9 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "OK"})
+	})
 	api := app.Group("/api")
 
 	api.Post("/register", handlers.Register)
@@ -14,6 +17,7 @@ func Setup(app *fiber.App) {
 
 	movieApi := api.Group("/movie", middleware.Protected)
 	timetableApi := api.Group("/timetable", middleware.Protected)
+	screenApi := api.Group("/screen", middleware.Protected)
 
 	movieApi.Post("/add", handlers.AddMovie)
 	movieApi.Patch("/update", handlers.UpdateMovie)
@@ -28,6 +32,8 @@ func Setup(app *fiber.App) {
 	timetableApi.Post("/capacity", handlers.GetCapacity)
 	timetableApi.Post("/revenue", handlers.GetRevenue)
 	timetableApi.Get("/all/bookings", handlers.GetAllReservations)
+
+	screenApi.Get("/view_seats", handlers.ViewSeats)
 
 	protected := api.Group("/user", middleware.Protected)
 

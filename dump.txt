@@ -1,0 +1,26 @@
+ id |       title       |                                     description                                      |                             poster_url                              |            genre
+----+-------------------+--------------------------------------------------------------------------------------+---------------------------------------------------------------------+------------------------------
+  1 | Inception         | A skilled thief enters dreams to steal secrets from the subconscious.                | https://image.tmdb.org/t/p/original/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg | {Sci-Fi,Thriller}
+  2 | Avengers: Endgame | The Avengers assemble once more to reverse the damage caused by Thanos.              | https://image.tmdb.org/t/p/original/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg | {Action,Adventure,Superhero}
+  3 | Interstellar      | A team of astronauts travel through a wormhole in search of a new home for humanity. | https://image.tmdb.org/t/p/original/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg | {Sci-Fi,Drama}
+  4 | Joker             | A failed comedian descends into madness and becomes Gotham's infamous villain.       | https://image.tmdb.org/t/p/original/mZuAPY4ETMQPHhCXIcJ90kd6RaS.jpg | {Crime,Drama,Thriller}
+  5 | The Dark Knight   | Batman faces the Joker in a battle for Gotham City.                                  | https://image.tmdb.org/t/p/original/qJ2tW6WMUDux911r6m7haRef0WH.jpg | {Action,Crime,Drama}
+
+
+ id | auditorium_number |                                          normal_seats                                          |         vip_seats          |    type
+----+-------------------+------------------------------------------------------------------------------------------------+----------------------------+-------------
+  1 |                 1 | {A1,A2,A3,A4,A5,A6,A7,A8,B1,B2,B3,B4,B5,B6,B7,B8,C1,C2,C3,C4,C5,C6,C7,C8}                      | {V1,V2,V3,V4,V5,V6}        | 2D
+  2 |                 2 | {A1,A2,A3,A4,A5,A6,B1,B2,B3,B4,B5,B6,C1,C2,C3,C4,C5,C6,D1,D2,D3,D4,D5,D6}                      | {VIP1,VIP2,VIP3,VIP4}      | 3D
+  3 |                 3 | {A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,B1,B2,B3,B4,B5,B6,B7,B8,B9,B10,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10} | {V1,V2,V3,V4,V5,V6,V7,V8}  | IMAX
+  4 |                 4 | {A1,A2,A3,A4,A5,B1,B2,B3,B4,B5,C1,C2,C3,C4,C5,D1,D2,D3,D4,D5}                                  | {VIP1,VIP2,VIP3,VIP4,VIP5} | 4DX
+  5 |                 5 | {A1,A2,A3,A4,A5,A6,A7,B1,B2,B3,B4,B5,B6,B7,C1,C2,C3,C4,C5,C6,C7,D1,D2,D3,D4,D5,D6,D7}          | {R1,R2,R3,R4,R5,R6}        | Dolby Atmos
+
+ id | movie_id |                                                  schedule                                                   | show_date  | normal_price | vip_price
+----+----------+-------------------------------------------------------------------------------------------------------------+------------+--------------+-----------
+  1 |        4 | [{"timings": ["10:00", "13:15", "16:30"], "screen_id": 1}, {"timings": ["11:00", "14:15"], "screen_id": 2}] | 2026-06-25 |          120 |       200
+
+ id | showtime_id | screen_id | show_time |                                                                                                                                                                                                                                                                                        seat_status                                                                                                                                      
+----+-------------+-----------+-----------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  1 |           1 |         1 | 10:00     | {"A1": "available", "A2": "available", "A3": "available", "A4": "available", "A5": "available", "A6": "available", "A7": "available", "A8": "available", "B1": "available", "B2": "available", "B3": "available", "B4": "available", "B5": "available", "B6": "available", "B7": "available", "B8": "available", "C1": "available", "C2": "available", "C3": "available", "C4": "available", "C5": "available", "C6": "available", "C7": "available", "C8": "available", "V1": "available", "V2": "available", "V3": "available", "V4": "available", "V5": "available", "V6": "available"}    
+
+  

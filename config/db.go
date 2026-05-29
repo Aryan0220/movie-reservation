@@ -12,8 +12,9 @@ func ConnectDB() error {
 	var err error
 	DB, err = pgxpool.New(context.Background(), GetEnv("DB_URL"))
 	if err != nil {
+		log.Printf("Failed to connect to DB: %v", err)
 		return err
 	}
-	log.Println("connected to DB")
+	log.Println("Connected to DB")
 	return nil
 }
