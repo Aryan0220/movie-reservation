@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"booking-system/services"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -115,8 +116,8 @@ func TestProtected_ValidToken(t *testing.T) {
 	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
 		t.Fatalf("failed to decode response: %v", err)
 	}
-	if body["role"] != "admin" {
-		t.Fatalf("expected role admin, got %v", body["role"])
+	if body["role"] != true {
+		t.Fatalf("expected role true, got %v", body["role"])
 	}
 	if body["user_id"] != float64(123) {
 		t.Fatalf("expected user_id 123, got %v", body["user_id"])

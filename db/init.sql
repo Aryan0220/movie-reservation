@@ -161,3 +161,107 @@ INSERT INTO screens (
     'Dolby Atmos'
 );
 
+INSERT INTO showtimes (
+    movie_id,
+    schedule,
+    show_date,
+    normal_price,
+    vip_price
+) VALUES
+
+(
+    1,
+    '[{"screen_id": 1, "timings": ["10:00", "14:00"]}]'::jsonb,
+    '2027-06-01',
+    200,
+    350
+),
+(
+    1,
+    '[{"screen_id": 3, "timings": ["18:00", "21:30"]}]'::jsonb,
+    '2027-06-02',
+    250,
+    450
+),
+
+(
+    2,
+    '[{"screen_id": 2, "timings": ["09:30", "13:30"]}]'::jsonb,
+    '2027-06-01',
+    220,
+    400
+),
+(
+    2,
+    '[{"screen_id": 5, "timings": ["17:00", "20:30"]}]'::jsonb,
+    '2027-06-02',
+    250,
+    450
+),
+
+(
+    3,
+    '[{"screen_id": 3, "timings": ["11:00", "15:00"]}]'::jsonb,
+    '2027-06-01',
+    250,
+    450
+),
+(
+    3,
+    '[{"screen_id": 1, "timings": ["19:00", "22:00"]}]'::jsonb,
+    '2027-06-03',
+    200,
+    350
+),
+
+(
+    4,
+    '[{"screen_id": 4, "timings": ["12:00", "16:00"]}]'::jsonb,
+    '2027-06-01',
+    230,
+    420
+),
+(
+    4,
+    '[{"screen_id": 2, "timings": ["18:30", "21:00"]}]'::jsonb,
+    '2027-06-03',
+    220,
+    400
+),
+
+(
+    5,
+    '[{"screen_id": 5, "timings": ["10:30", "14:30"]}]'::jsonb,
+    '2027-06-02',
+    250,
+    450
+),
+(
+    5,
+    '[{"screen_id": 3, "timings": ["19:30", "22:30"]}]'::jsonb,
+    '2027-06-03',
+    250,
+    450
+);
+
+INSERT INTO show_seats (
+    showtime_id,
+    screen_id,
+    show_time,
+    seat_status
+)
+SELECT
+    st.id,
+    (schedule_item->>'screen_id')::INTEGER,
+    timing,
+    (
+        SELECT jsonb_object_agg(seat, 'available')
+        FROM (
+            SELECT unnest(s.normal_seats || s.vip_seats) AS seat
+        ) seats
+    )
+FROM showtimes st
+CROSS JOIN LATERAL jsonb_array_elements(st.schedule) schedule_item
+CROSS JOIN LATERAL jsonb_array_elements_text(schedule_item->'timings') timing
+JOIN screens s
+    ON s.id = (schedule_item->>'screen_id')::INTEGER;

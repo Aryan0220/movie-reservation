@@ -83,13 +83,27 @@ func ReserveTicket(userID, timetableID, screenID int, seats []string, dateTime t
 }
 
 func CancelReservation(userID, bookingID int, now time.Time) error {
+	ctx := context.Background()
+	transaction, err := config.DB.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			_ = transaction.Rollback(ctx)
+		}
+	}()
+
 	var ownerID int
+	var timetableID int
+	var screenID int
+	var seats []string
 	var dateTime time.Time
 
-	err := config.DB.QueryRow(context.Background(),
-		"SELECT user_id, booking_time FROM bookings WHERE id=$1",
+	err = transaction.QueryRow(ctx,
+		"SELECT user_id, showtime_id, screen_id, seats, booking_time FROM bookings WHERE id=$1",
 		bookingID,
-	).Scan(&ownerID, &dateTime)
+	).Scan(&ownerID, &timetableID, &screenID, &seats, &dateTime)
 	if err != nil {
 		return ErrNotFound
 	}
@@ -102,11 +116,38 @@ func CancelReservation(userID, bookingID int, now time.Time) error {
 		return ErrPastReservation
 	}
 
-	_, err = config.DB.Exec(context.Background(),
+	seatSet := toStringSet(seats)
+	seatPatch, patchErr := buildSeatStatusPatch(seatSet, "available")
+	if patchErr != nil {
+		err = patchErr
+		return err
+	}
+
+	commandTag, updateErr := transaction.Exec(ctx,
+		"UPDATE show_seats SET seat_status = seat_status || $4::jsonb WHERE showtime_id=$1 AND screen_id=$2 AND show_time=$3",
+		timetableID, screenID, dateTime.Format("15:04"), seatPatch,
+	)
+	if updateErr != nil {
+		err = updateErr
+		return err
+	}
+	if commandTag.RowsAffected() == 0 {
+		return ErrInvalidShowtime
+	}
+
+	_, err = transaction.Exec(ctx,
 		"DELETE FROM bookings WHERE id=$1",
 		bookingID,
 	)
-	return err
+	if err != nil {
+		return err
+	}
+
+	if commitErr := transaction.Commit(ctx); commitErr != nil {
+		return commitErr
+	}
+
+	return nil
 }
 
 func GetCapacity(timetableID, screenID int, dateTime time.Time) (int, int, error) {
