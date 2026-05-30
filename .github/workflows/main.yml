@@ -53,8 +53,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /opt/movie-reservation
+            cd ./movie-reservation
             docker compose pull
             docker compose up -d
-            docker image prune -f
+            docker image prune -a -f
        
