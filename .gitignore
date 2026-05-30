@@ -18,5 +18,4 @@ go.work.sum
 Dockerfile
 docker-compose.yml
 .air.toml
-README.md
-explanation.md
+*.md

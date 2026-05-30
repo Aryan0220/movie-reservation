@@ -394,3 +394,9 @@ docker build -t movie-postgres -f ./db/Dockerfile db
 docker volume rm postgres_data    
 docker run -it --name movie-database -p 5432:5432 -v postgres_data:/var/lib/postgresql -e POSTGRES_DB=moviedb -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=zoro movie-postgres
 CMD ["psql", "-U", "postgres", "-d", "moviedb"]
+
+- name: Login to Docker Hub
+  uses: docker/login-action@v3
+  with:
+    username: ${{ secrets.DOCKER_USERNAME }}
+    password: ${{ secrets.DOCKER_PASSWORD }}
