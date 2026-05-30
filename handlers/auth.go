@@ -30,7 +30,9 @@ func Register(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error {
 	var input models.User
 
-	c.BodyParser(&input)
+	if err := c.BodyParser(&input); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	}
 
 	user, err := services.GetUserByEmail(input.Email)
 	if err != nil {

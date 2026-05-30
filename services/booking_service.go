@@ -334,15 +334,6 @@ func validateSeatsExist(seats map[string]struct{}, normal []string, vip []string
 	return nil
 }
 
-func containsInt(values []int, target int) bool {
-	for _, value := range values {
-		if value == target {
-			return true
-		}
-	}
-	return false
-}
-
 func toStringSet(values []string) map[string]struct{} {
 	set := make(map[string]struct{}, len(values))
 	for _, value := range values {

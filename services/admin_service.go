@@ -7,7 +7,7 @@ import (
 )
 
 func PromoteToAdmin(user models.User) error {
-	if user.Role == true{
+	if user.Role{
 		return nil
 	}
 	

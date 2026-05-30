@@ -10,11 +10,15 @@ import (
 func main() {
 	val := config.LoadEnv()
 	log.Println(val)
-	config.ConnectDB()
+	if err := config.ConnectDB(); err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
 
 	app := fiber.New()
 
 	routes.Setup(app)
 	log.Println(config.GetEnv("PORT"))
-	app.Listen(":" + config.GetEnv("PORT"))
+	if err := app.Listen(":" + config.GetEnv("PORT")); err != nil {
+		log.Fatal("Failed to start server:", err)
+	}
 }
