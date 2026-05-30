@@ -68,8 +68,9 @@ func validateTimetableInput(input models.MovieTimetable, requireID bool) error {
 	}
 
 	showDate := input.ShowDate
-	
-	today := time.Now().In(time.Local)
+
+	ist, _ := time.LoadLocation("Asia/Kolkata")
+	today := time.Now().In(ist)
 	todayDate := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
 	if showDate.Before(todayDate) {
 		return fiber.NewError(400, "Show date cannot be in the past")

@@ -176,8 +176,15 @@ func TestGetCapacity_Success(t *testing.T) {
 		return GetCapacity(c)
 	})
 
-	dateTime := time.Date(2026, 6, 1, 15, 4, 0, 0, time.Local)
-	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, time.Local)
+	ist, _ := time.LoadLocation("Asia/Kolkata")
+
+	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, ist)
+	dateTimeLocal := time.Date(2026, 6, 1, 15, 4, 0, 0, ist)
+	payloadDateTime := dateTimeLocal.Format(time.RFC3339)
+	dateTime, err := time.Parse(time.RFC3339, payloadDateTime)
+	if err != nil {
+		t.Fatalf("failed to parse date_time: %v", err)
+	}
 	schedule := []models.Schedule{{ScreenID: 2, Timings: []string{"15:04"}}}
 
 	mock.ExpectQuery("SELECT id, movie_id, schedule, show_date, normal_price, vip_price FROM showtimes WHERE id=").
@@ -195,7 +202,7 @@ func TestGetCapacity_Success(t *testing.T) {
 	payload := map[string]interface{}{
 		"timetable_id": 10,
 		"screen_id":    2,
-		"date_time":    dateTime.Format(time.RFC3339),
+		"date_time":    payloadDateTime,
 	}
 	body, _ := json.Marshal(payload)
 
@@ -238,10 +245,11 @@ func TestGetAllReservations_Success(t *testing.T) {
 		return GetAllReservations(c)
 	})
 
-	now := time.Date(2026, 6, 1, 0, 0, 0, 0, time.Local)
+	ist, _ := time.LoadLocation("Asia/Kolkata")
+	now := time.Date(2026, 6, 1, 0, 0, 0, 0, ist)
 	rows := pgxmock.NewRows([]string{"id", "user_id", "showtime_id", "screen_id", "seats", "booking_time"}).
 		AddRow(1, 2, 3, 4, []string{"A1"}, now)
-	mock.ExpectQuery("SELECT id, user_id, showtime_id, screen_id, seats, booking_time FROM bookings").
+	mock.ExpectQuery("SELECT id, user_id, showtime_id, screen_id, seats, booking_time FROM bookings ORDER BY booking_time DESC").
 		WillReturnRows(rows)
 
 	req := httptest.NewRequest("GET", "/bookings", nil)

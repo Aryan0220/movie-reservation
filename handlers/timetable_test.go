@@ -58,8 +58,10 @@ func TestAddShowTime_Success(t *testing.T) {
 		c.Locals("Role", true)
 		return AddShowTime(c)
 	})
+	ist, _ := time.LoadLocation("Asia/Kolkata")
 
-	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, time.Local)
+	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, ist)
+	payloadShowDate := showDate.Format(time.RFC3339)
 	input := models.MovieTimetable{
 		MovieID:     10,
 		ShowDate:    showDate,
@@ -71,10 +73,14 @@ func TestAddShowTime_Success(t *testing.T) {
 		}},
 	}
 	payload, _ := json.Marshal(input)
+	expectedShowDate, err := time.Parse(time.RFC3339, payloadShowDate)
+	if err != nil {
+		t.Fatalf("failed to parse show_date: %v", err)
+	}
 
 	mock.ExpectBegin()
 	mock.ExpectQuery("INSERT INTO showtimes").
-		WithArgs(input.MovieID, input.Schedule, input.ShowDate, input.NormalPrice, input.VipPrice).
+		WithArgs(input.MovieID, input.Schedule, expectedShowDate, input.NormalPrice, input.VipPrice).
 		WillReturnRows(pgxmock.NewRows([]string{"id"}).AddRow(99))
 
 	mock.ExpectQuery("SELECT id, auditorium_number, normal_seats, vip_seats, type FROM screens WHERE id=").
@@ -132,12 +138,18 @@ func TestUpdateShowTime_Success(t *testing.T) {
 		return UpdateShowTime(c)
 	})
 
-	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, time.Local)
+	ist, _ := time.LoadLocation("Asia/Kolkata")
+
+	showDate := time.Date(2026, 6, 1, 0, 0, 0, 0, ist)
+	payloadShowDate := showDate.Format(time.RFC3339)
 	input := models.MovieTimetable{ID: 5, MovieID: 10, ShowDate: showDate, NormalPrice: 10, VipPrice: 20, Schedule: []models.Schedule{{ScreenID: 1, Timings: []string{"12:00"}}}}
 	payload, _ := json.Marshal(input)
-
+	expectedShowDate, err := time.Parse(time.RFC3339, payloadShowDate)
+	if err != nil {
+		t.Fatalf("failed to parse show_date: %v", err)
+	}
 	mock.ExpectExec("UPDATE showtimes SET").
-		WithArgs(input.MovieID, input.Schedule, input.ShowDate, input.NormalPrice, input.VipPrice, input.ID).
+		WithArgs(input.MovieID, input.Schedule, expectedShowDate, input.NormalPrice, input.VipPrice, input.ID).
 		WillReturnResult(pgxmock.NewResult("UPDATE", 1))
 
 	req := httptest.NewRequest("PATCH", "/timetable", bytes.NewReader(payload))

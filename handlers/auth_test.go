@@ -20,7 +20,7 @@ func TestRegister_InvalidInput(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "/register", bytes.NewBufferString("{"))
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := app.Test(req)
+	resp, err := app.Test(req, -1)
 	if err != nil {
 		t.Fatalf("request failed: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestRegister_Success(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "/register", bytes.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := app.Test(req)
+	resp, err := app.Test(req, -1)
 	if err != nil {
 		t.Fatalf("request failed: %v", err)
 	}
